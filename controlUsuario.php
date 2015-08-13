@@ -22,7 +22,7 @@ while($rowSql = pg_fetch_array($sql))
 	{
 		if($rowSql['habilitado'] == true)
 		{
-			if($passToValidate == disencrypt($rowSql['password']))
+			if(md5(crypt($passToValidate,CRYPT_BLOWFISH)) == $rowSql['password'])
 			{
 				return 1;
 			}

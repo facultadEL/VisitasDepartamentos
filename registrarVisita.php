@@ -8,55 +8,110 @@
 <link rel="stylesheet" href="css/registroPasante.css">
 	<title>Registro de Usuario</title>
 	<script>
-		var mailDictionary = [];
+		var tieneDatos = false;
+		var nombreVisita;
+		var cantAlumnosAgregados = 0;
+		var sep = '/--/';
+		var sepTotal = '/-/-/';
+		var dniAId = '#dniAlumno';
+		var apellidoAId = '#apellidoAlumno';
+		var nombreAId = '#nombreAlumno';
+		var fechaAId = '#fechaAlumno';
+		var mailAId = '#mailAlumno';
+		var hiddenAId = '#idHiddenAlumno';
+		var stringAlumnosPasar = "";
 
-		function setMail(mailToSet)
+		function setDatosVisita(datos)
 		{
-			mailDictionary.push(mailToSet);
+			tieneDatos = true;
+			var vDatos = datos.split('/--/');
+			nombreVisita
 		}
 
-		function checkMail()
+		var alumnoDictionary = [];
+		var alumnosAgregados = []
+
+		function setAlumno(alumnoToSet)
 		{
-			var mailABuscar = $('#mail').val();
-			if($.inArray(mailABuscar, mailDictionary) != -1)
+			alumnoDictionary.push(alumnoToSet);
+		}
+
+
+		function checkAlumno()
+		{			
+			dniNuevoAlumno = $(dniAId).val();
+			for(var i = 0; i < alumnoDictionary.length; i++)
 			{
-				alert("Este mail ya se encuentra registrado");
-				$('#mail').val("");
-				$('#mail').focus();
+				var vDatosAlumno = alumnoDictionary[i].split(sep);
+				if(dniNuevoAlumno == vDatosAlumno[0])
+				{
+					$(apellidoAId).val(vDatosAlumno[1]);
+					$(nombreAId).val(vDatosAlumno[2]);
+					$(fechaAId).val(vDatosAlumno[3]);
+					$(mailAId).val(vDatosAlumno[4]);
+					$(hiddenAId).val(vDatosAlumno[5]);
+				}
 			}
 		}
 
-		function setPass(passToSet){
-			pass = passToSet;
+		function addAlumno()
+		{
+			if(!controlVacio(apellidoAId)) return false;
+			if(!controlVacio(nombreAId)) return false;
+			if(!controlVacio(fechaAId)) return false;
+			/*
+			Seguir control vacio
+			*/
+			cantAlumnosAgregados++;
+			//stringAlumnosPasar += $(dniAId).val()+sep+$(apellidoAId).val()+sep+$(nombreAId).val()+sep+$(fechaAId).val()+sep+$(mailAId).val()+sep+$(hiddenAId)+sepTotal;
+			stringToPush = $(dniAId).val()+sep+$(apellidoAId).val()+sep+$(nombreAId).val()+sep+$(fechaAId).val()+sep+$(mailAId).val()+sep+$(hiddenAId);
+			alumnosAgregados.push(stringToPush);
+
+			actualizarTabla();
+			limpiarPantalla();
+
 		}
-		//Esto se ejecuta cuando la página ya esta cargada
+
+		function limpiarPantalla()
+		{
+			$(apellidoAId).val('');
+			$(nombreAId).val('');
+			$(fechaAId).val('');
+			$(mailAId).val('');
+			$(hiddenAId).val('-1');
+		}
+
+		function actualizarTabla()
+		{
+			stringToAdd = '';
+			$('#cuerpoTabla').html('');
+
+			for(var i = 0; i < alumnosAgregados.length; i++)
+			{
+				var vAlumno = alumnosAgregados[i].split(sep);
+				stringToAdd += '<tr><td>'+vAlumno[0]+'</td><td>'+vAlumno[1]+'</td><td>'+vAlumno[2]+'</td><td>'+vAlumno[3]+'</td><td>'+vAlumno[4]+'</td><td><input type="button" value="X" onclick="borrarAlumno('+"'"+i+"'"+')"</td></tr>';
+			}
+			$('#cuerpoTabla').html(stringToAdd);
+		}
+
+		function borrarAlumno(index)
+		{
+			//Funcion que borra
+			alumnosAgregados.
+			actualizarTabla();
+		}
+
+		function controlVacio()
+		{
+
+		}
+
 		$(document).ready(function(){
-			//Acá se controla si trae un password. Lo trae cargado en caso de que sea un update de datos
-			//Si no lo trae cargado, lo genera por primera vez que se registra.
-			if (pass == null) {
-				sD();
-				lDD();
-				longValue = 8;
-				var pass = gP(longValue);
-				var pass_encriptado = encrypt(pass, 'eof');
-
-			}
-			//Setea el hidden con el password
-			$('#hiddenPass').val(pass);
-			//$('#hiddenPassEnc').val(pass_encriptado);
-		});
-
-		function checkMail2()
-		{
-			var mail1 = $('#mail').val();
-			var mail2 = $('#mail2').val();
-			if(mail1 == mail2)
+			if(tieneDatos)
 			{
-				alert("No se puede utilizar el mismo mail");
-				$('#mail2').val("");
-				$('#mail2').focus();
+
 			}
-		}
+		});
 	</script>
 </head>
 <body>
@@ -65,11 +120,34 @@
 include_once "conexion.php";
 include_once "libreria.php";
 
+$idVisita = (empty($_REQUEST['idVisita'])) ? 0 : $_REQUEST['idVisita'];
+
+if($idVisita != 0)
+{
+	$condicion = "id=$idVisita LIMIT 1;";
+	$sqlVisita = traerSqlCondicion('*','visita',$condicion);
+	$rowVisita = pg_fetch_array($sqlVisita);
+
+}
+
+$cantAlumnos = contarRegistro('id','alumno');
+if($cantAlumnos > 0)
+{
+	$sep = '/--/';
+	$sqlAlumnos = traerSql('*','alumno');
+	while($rowAlumnos = pg_fetch_array($sqlAlumnos))
+	{
+		$dataAlumno = $rowAlumnos['dni'].$sep.$rowAlumnos['apellido'].$sep.$rowAlumnos['nombre'].$sep.$rowAlumnos['fecha_nac'].$sep.$rowAlumnos['mail'].$sep.$rowAlumnos['id'];
+		echo "<script>setAlumno('".$dataAlumno."')</script>";
+	}
+}
+
+/*
 $verificarMail=traerSql('mail', 'pasante');
 while($rowVerifMail=pg_fetch_array($verificarMail,NULL,PGSQL_ASSOC)){
 	echo "<script>setMail('".$rowVerifMail['mail']."')</script>";
 }
-
+*/
 ?>
 <div id="formulario">
 <h2>Registrar nueva visita</h2>
@@ -79,215 +157,79 @@ while($rowVerifMail=pg_fetch_array($verificarMail,NULL,PGSQL_ASSOC)){
 		<td width="100%">
 			<fieldset>
 				<legend>Datos de la visita</legend>
-					<table align="center" width="100%">
-						<tr width="100%">
-							<td width="10%" align="right">
-								<label for="nombre">Nombre: </label>
-							</td>
-							<td width="30%">
-								<input id="nombre" name="nombre" type="text" class="campoText" value="" required autofocus/>
-							</td>
-							<td width="10%" align="right">
-								<label for="apellido">Apellido: </label>
-							</td>
-							<td width="30%">
-								<input id="apellido" name="apellido" type="text" class="campoText" value="<?php echo $apellido; ?>" required/>
-							</td>
-							<td width="10%" align="right">
-								<label for="nro_legajo">N&deg; Legajo: </label>
-							</td>
-							<td width="10%" colspan="3">
-								<input id="nro_legajo" name="nro_legajo" pattern="[0-9]{4,5}" type="text" class="campoNro" value="<?php echo $nro_legajo; ?>" size="4" maxlength="5" required/>
-							</td>
-						</tr>
-						<tr width="100%">
-							<td colspan="1" align="right">
-								<label for="tipodni">Tipo DNI:</label>
-							</td>
-							<td colspan="1">
-								<select id="tipodni" name="tipodni" size="1">
-									<?php
-										$consultaTipoDNI=traerSql('*','tipo_dni');
-										while($rowTipoDNI=pg_fetch_array($consultaTipoDNI)){
-										if ($tipodni == $rowTipoDNI['id']){
-					                        echo "<option value=".$rowTipoDNI['id']." selected>".$rowTipoDNI['nombre']."</option>";
-										}else{
-											echo "<option value=".$rowTipoDNI['id'].">".$rowTipoDNI['nombre']."</option>";
-											}
-										}
-									?>
-								</select>
-							</td>
-							<td colspan="1" align="right">
-								<label for="nrodni">N&deg; DNI:</label>
-							</td>
-							<td colspan="5">
-								<!-- <input id="nrodni" name="nrodni" type="text" class="campoText" onkeyup="maskDni()" onfocus="this.value = '';" pattern="[0-9]{1,2}+[.]{1}[0-9]{3}+[.]{1}[0-9]{3}" value="<?php //echo $nrodni; ?>" maxlength="10" autocomplete="off" required/> -->
-								<input id="nrodni" name="nrodni" type="text" class="campoText" pattern="([0-9]{1}|[0-9]{2})[0-9]{3}[0-9]{3}" value="<?php echo $nrodni; ?>" maxlength="10" title="Solo n&uacute;meros" autocomplete="off" required/>
-							</td>
-						</tr>
-						<tr width="100%">
-							<td colspan="1" align="right">
-								<label for="fec_nacimiento">Fecha Nac.: </label>
-							</td>
-							<td colspan="1">
-								<input id="fec_nacimiento" name="fec_nacimiento" type="date" class="campoDate"  value="<?php echo $fec_nacimiento; ?>" placeholder="dd/mm/aaaa" maxlength="10" required/>
-							</td>
-							<td colspan="1" align="right">
-								<label for="loc_nacimiento">Lugar Nac.: </label>
-							</td>
-							<td colspan="5">
-								<input id="loc_nacimiento" name="loc_nacimiento" type="text" spellcheck="true" class="campoText" value="<?php echo $loc_nacimiento; ?>" required/>
-							</td>
-						</tr>
-						<tr width="100%">
-							<td  width="100%" colspan="8"><hr size="2" width="100%" align="center"/></td>
-						</tr>
-						<tr width="100%">
-							<td  width="100%" colspan="8">
-								<legend id="leyenda">*Domicilio donde vive</legend>
-							</td>
-						</tr>
-						<tr width="100%">
-							<td colspan="1" align="right">
-								<label for="loc_viviendo">Localidad:</label>
-							</td>
-							<td colspan="1">
-								<input id="loc_viviendo" name="loc_viviendo" type="text" spellcheck="true" class="campoText" value="<?php echo $loc_viviendo; ?>" required/>
-							</td>
-							<td colspan="1" align="right">
-								<label for="prov_viviendo">Provincia:</label>
-							</td>
-							<td colspan="1">
-								<input id="prov_viviendo" name="prov_viviendo" type="text" spellcheck="true" class="campoText" value="<?php echo $prov_viviendo; ?>" required/>
-							</td>
-							<td colspan="1" align="right">
-								<label for="codpos">C.P.:</label>
-							</td>
-							<td colspan="3">
-								<input id="codpos" name="codpos" type="text" class="campoNro" pattern="[0-9]{4}" value="<?php echo $codpos; ?>" required maxlength="4" size="4"/>
-							</td>
-						</tr>
-						<tr width="100%">
-							<td colspan="1" width="10%" align="right">
-								<label for="calle">Calle: </label>
-							</td>
-							<td colspan="1" width="30%">
-								<input id="calle" name="calle" type="text" class="campoText" value="<?php echo $calle; ?>" required/>
-							</td>
-							<td colspan="1" width="10%" align="right">
-								<label for="nrocalle">N&deg;: </label>
-							</td>
-							<td colspan="1" width="10%">
-								<input id="nrocalle" name="nrocalle" pattern="[0-9]{2,5}" maxlength="5" type="text" class="campoNro" size="4" value="<?php echo $nrocalle; ?>" title="El n&uacute;mero debe tener de 2 a 5 cifras" required/>
-							</td>
-							<td colspan="1" width="10%" align="right">
-								<label for="piso">Piso: </label>
-							</td>
-							<td colspan="1" width="10%">
-								<input id="piso" name="piso" type="text" pattern="[0-9]{2}" class="campoNro" size="4" value="<?php echo $piso; ?>"/>
-							</td>
-							<td colspan="1" width="10%" align="right">
-								<label for="dpto">Dpto: </label>
-							</td>
-							<td colspan="1" width="10%">
-								<input id="dpto" name="dpto" type="text" size="1" class="campoNro" value="<?php echo $dpto; ?>"/>
-							</td>
-						</tr>
-					</table>
+					<label for="nombreVisita">Nombre: </label>
+					<input type="text" name="nombreVisita" id="nombreVisita" />
+					<label for="fechaVisita">Fecha: </label>
+					<input type="date" name="fechaVisita" id="fechaVisita" />
+					<label for="catedra">C&aacute;tedra:</label>
+					<input type="text" name="catedra" id="catedra" />
+					<label for="profesorCatedra">Profesor a cargo de la c&aacute;tedra:</label>
+					<input type="text" name="profesorCatedra" id="profesorCatedra" />
+					<label for="profesorVisita">Profesor a cargo de la visita:</label>
+					<input type="text" name="profesorVisita" id="profesorVisita" />
+					<label for="movilidad">Medio de movilidad:</label>
+					<input type="text" name="movilidad" id="movilidad" />
+					<label for="motivo">Motivo de la visita:</label>
+					<textarea name="motivo" id="motivo"></textarea>
 			</fieldset>
 			<fieldset>
-				<legend>Datos Contacto</legend>
-					<table align="center" width="100%">
-						<tr width="100%">
-							<td width="10%" align="right">
-								<label for="caracfijo">Tel&eacute;fono Fijo: </label>
-							</td>
-							<td width="5%">
-								<input id="caracfijo" name="caracfijo" type="text" class="campoNro" pattern="[1-9]{2,4}" placeholder="Sin 0" value="<?php echo $caracfijo; ?>" size="3" maxlength="5"/>
-							</td>
-							<td width="35%">
-								<input id="nrofijo" name="nrofijo" type="text" class="campoTextTel" pattern="[0-9]{6,8}" value="<?php echo $nrofijo; ?>"/>
-							</td>
-							<td width="10%" align="right">
-								<label for="caraccel">Celular: </label>
-							</td>
-							<td width="5%">
-								<input id="caraccel" name="caraccel" type="text" class="campoNro" pattern="[1-9]{2,4}" placeholder="Sin 0" value="<?php echo $caraccel; ?>" size="3" maxlength="5" required/>
-							</td>
-							<td width="35%">
-								<input id="nrocelular" name="nrocelular" type="text" class="campoTextTel" pattern="[0-9]{6,8}" placeholder="Sin 15" value="<?php echo $nrocelular; ?>" required/>
-							</td>
-						</tr>
-						<tr width="100%">
-							<td colspan="1" align="right">
-								<label for="mail">Mail 1: </label>
-							</td>
-							<td colspan="2">
-								<input id="mail" name="mail" type="email" class="campoText" value="<?php echo $mail; ?>" onchange="checkMail();" autocomplete="off" required/>
-							</td>
-							<td colspan="1" align="right">
-								<label for="mail2">Mail 2: </label>
-							</td>
-							<td colspan="2">
-								<input id="mail2" name="mail2" type="email" onchange="checkMail2();" placeholder="Opcional" class="campoText" value="<?php echo $mail2; ?>"/>
-							</td>
-						</tr>
-						<tr width="100%">
-							<td colspan="1" align="right">
-								<label for="facebook">Facebook: </label>
-							</td>
-							<td colspan="2">
-								<input id="facebook" name="facebook" type="text" class="campoText" placeholder="&iquest;Como te encuentro?" value="<?php echo $facebook; ?>"/>
-							</td>
-							<td colspan="1" align="right">
-								<label for="twitter">Twitter: </label>
-							</td>
-							<td colspan="2">
-								<input id="twitter" name="twitter" type="text" class="campoText" value="<?php echo $twitter; ?>"/>
-							</td>
-						</tr>
-					</table>
+				<legend>Datos de la Empresa</legend>
+					<label for="nombreEmpresa">Nombre de la empresa:</label>
+					<input type="text" name="nombreEmpresa" id="nombreEmpresa" />
+					<label for="areaEmpresa">&Aacute;rea de la empresa:</label>
+					<input type="text" name="areaEmpresa" id="areaEmpresa" />
+					<label for="caracteristicaEmpresa">T&eacute;lefono:</label>
+					<input type="text" name="caracteristicaEmpresa" id="caracteristicaEmpresa" />
+					<input type="text" name="telefonoEmpresa" id="telefonoEmpresa" />
+			</fieldset>
+			<fieldset>
+				<legend>Datos del Contacto</legend>
+					<label for="nombreContacto">Nombre:</label>
+					<input type="text" name="nombreContacto" id="nombreContacto" />
+					<label for="apellidoContacto">Apellido:</label>
+					<input type="text" name="apellidoContacto" id="apellidoContacto" />
+					<label for="cargoContacto">Cargo que ocupa:</label>
+					<input type="text" name="cargoContacto" id="cargoContacto" />
+					<label for="mailContacto">Mail:</label>
+					<input type="mail" name="mailContacto" id="mailContacto" />
 			</fieldset>
 			<fieldset>
 				<legend>Alumnos</legend>
-					<table align="center" width="100%">
-						<tr width="100%">
-							<td width="10%" align="right">
-								<label for="loc_trabajo">Localidad:</label>
+					<label for="dniAlumno">DNI: </label>
+					<input type="text" name="dniAlumno" id="dniAlumno" onblur="checkAlumno()"/>
+					<input type="hidden" name="idHiddenAlumno" id="idHiddenAlumno"/>
+					<label for="nombreAlumno">Nombre:</label>
+					<input type="text" name="nombreAlumno" id="nombreAlumno" />
+					<label for="apellidoAlumno">Apellido:</label>
+					<input type="text" name="apellidoAlumno" id="apellidoAlumno" />
+					<label for="fechaAlumno">Fecha de Nacimiento:</label>
+					<input type="text" name="fechaAlumno" id="fechaAlumno" />
+					<label for="mailAlumno">Mail:</label>
+					<input type="mail" name="mailAlumno" id="mailAlumno" />
+					<input type="button" id="agregarAlumno" name="agregarAlumno" value="Agregar" onclick="addAlumno();"/>
+					<table id="tablaTotalAlumnos">
+						<thead>
+							<td>
+								DNI
 							</td>
-							<td width="30%">
-								<input id="loc_trabajo" name="loc_trabajo" type="text" class="campoText" spellcheck="true" value="<?php echo $loc_trabajo; ?>"/>
+							<td>
+								Apellido
 							</td>
-							<td width="10%" align="right">
-								<label for="prov_trabajo">Provincia:</label>
+							<td>
+								Nombre
 							</td>
-							<td width="30%">
-								<input id="prov_trabajo" name="prov_trabajo" type="text" class="campoText" spellcheck="true" value="<?php echo $prov_trabajo; ?>"/>
+							<td>
+								Fecha Nacimiento
 							</td>
-							<td width="10%" align="right">
-								<label for="codpos2">C.P.:</label>
+							<td>
+								Mail
 							</td>
-							<td width="10%">
-								<input id="codpos2" name="codpos2" type="text" class="campoNro" pattern="[0-9]{4}" value="<?php echo $codpos2; ?>" maxlength="4" size="2"/>
+							<td>
 							</td>
-						</tr>
-						<tr width="100%">
-							<td colspan="1" align="right">
-								<label for="empresa_trabaja">Empresa: </label>
-							</td>
-							<td colspan="5">
-								<input id="empresa_trabaja" name="empresa_trabaja" type="text" class="campoText" value="<?php echo $empresa_trabaja; ?>"/>
-							</td>
-						</tr>
-						<tr width="100%">
-							<td colspan="1" align="right">
-								<label for="perfil_laboral">Perfil Laboral: </label>
-							</td>
-							<td colspan="5">
-								<textarea id="perfil_laboral" name="perfil_laboral" class="campoArea" value="" spellcheck="true" ><?php echo $perfil_laboral; ?></textarea>
-							</td>
-						</tr>
+						</thead>
+						<tbody id="cuerpoTabla">
+							
+						</tbody>
 					</table>
 			</fieldset>
 		</td>
