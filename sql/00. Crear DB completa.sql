@@ -37,12 +37,12 @@ create table visita
 	nombre_empresa character varying not null,
 	area_empresa character varying,
 	nombre_contacto character varying not null,
+	apellido_contacto character varying not null,
 	cargo_contacto character varying,
 	mail_contacto character varying,
 	telefono_empresa character varying,
 	motivo_visita text not null,
-	localidad integer references localidad(id) not null,
-	solicitante integer references usuario(id) not null,
+	solicitante_fk integer references usuario(id) not null,
 };
 
 create table tipotelefono
@@ -68,7 +68,7 @@ create table alumno
 	id serial not null primary key,
 	nombre character varying not null,
 	apellido character varying not null,
-	tipodni integer references tipodni(id) not null,
+	tipodni_fk integer references tipodni(id) not null,
 	dni character varying not null,
 	fecha_nac date,
 	mail character varying,
@@ -79,13 +79,13 @@ create table telefono
 	id serial not null primary key,
 	caracteristica character varying not null,
 	numero character varying not null,
-	tipotelefono integer references tipotelefono(id),
-	alumno integer references alumno(id)
+	tipotelefono_fk integer references tipotelefono(id),
+	alumno_fk integer references alumno(id)
 }
 
 create table alumnoxvisita
 {
 	id serial not null primary key,
-	alumno integer references alumno(id),
-	visita integer references visita(id)
+	alumno_fk integer references alumno(id),
+	visita_fk integer references visita(id)
 }

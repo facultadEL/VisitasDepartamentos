@@ -45,7 +45,7 @@ function traerSqlCondicion($rango,$tabla,$condicion){
     return $sql;
 }
 
-function traerId($tabla){
+function traerProximoId($tabla){
 	$sqlId = pg_query('SELECT max(id) FROM '.$tabla);
 	$rowId = pg_fetch_array($sqlId);
 	$maxId = $rowId['max'] + 1;

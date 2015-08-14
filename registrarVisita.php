@@ -9,7 +9,7 @@
 	<title>Registro de Usuario</title>
 	<script>
 		var tieneDatos = false;
-		var nombreVisita;
+
 		var cantAlumnosAgregados = 0;
 		var sep = '/--/';
 		var sepTotal = '/-/-/';
@@ -21,11 +21,36 @@
 		var hiddenAId = '#idHiddenAlumno';
 		var stringAlumnosPasar = "";
 
+		var idVisita,nombreVisita, catedra, profesorCatedra, profesorVisita, movilidad,
+		fecha, nombreEmpresa, areaEmpresa,nombreContacto,apellidoContacto,
+		cargoContacto,mailContacto,telefonoEmpresa,motivoVisita;
+		
 		function setDatosVisita(datos)
 		{
 			tieneDatos = true;
-			var vDatos = datos.split('/--/');
-			nombreVisita
+			var vDatos = datos.split(sep);
+			idVisita = vDatos[0];
+			nombreVisita = vDatos[1];
+			catedra = vDatos[2];
+			profesorCatedra = vDatos[3];
+			profesorVisita = vDatos[4];
+			movilidad = vDatos[5];
+			fecha = vDatos[6];
+			nombreEmpresa = vDatos[7];
+			areaEmpresa = vDatos[8];
+			nombreContacto = vDatos[9];
+			apellidoContacto = vDatos[10];
+			cargoContacto = vDatos[11];
+			mailContacto = vDatos[12];
+			telefonoEmpresa = vDatos[13];
+			motivoVisita = vDatos[14];
+		}
+
+		function setAlumnoXVisita(datos)
+		{
+			cantAlumnosAgregados++;
+			alumnosAgregados.push(datos);
+
 		}
 
 		var alumnoDictionary = [];
@@ -54,6 +79,13 @@
 			}
 		}
 
+		function toCapitalLetter(originalString)
+		{
+			originalString = originalString.toLowerCase();
+			returnString = originalString[0].toUpperCase()+originalString.substr(1);
+			return returnString;
+		}
+
 		function addAlumno()
 		{
 			if(!controlVacio(apellidoAId)) return false;
@@ -64,7 +96,7 @@
 			*/
 			cantAlumnosAgregados++;
 			//stringAlumnosPasar += $(dniAId).val()+sep+$(apellidoAId).val()+sep+$(nombreAId).val()+sep+$(fechaAId).val()+sep+$(mailAId).val()+sep+$(hiddenAId)+sepTotal;
-			stringToPush = $(dniAId).val()+sep+$(apellidoAId).val()+sep+$(nombreAId).val()+sep+$(fechaAId).val()+sep+$(mailAId).val()+sep+$(hiddenAId);
+			stringToPush = $(dniAId).val()+sep+toCapitalLetter($(apellidoAId).val())+sep+toCapitalLetter($(nombreAId).val())+sep+$(fechaAId).val()+sep+$(mailAId).val()+sep+$(hiddenAId);
 			alumnosAgregados.push(stringToPush);
 
 			actualizarTabla();
@@ -97,7 +129,8 @@
 		function borrarAlumno(index)
 		{
 			//Funcion que borra
-			alumnosAgregados.
+			alumnosAgregados.splice(index,1);
+			cantAlumnosAgregados--;
 			actualizarTabla();
 		}
 
@@ -106,10 +139,53 @@
 
 		}
 
+		function controlSubmit()
+		{
+			//Llamar a control vacio con las variables obligatorias
+
+			if(cantAlumnosAgregados < 1)
+			{
+				return false;
+			}
+			else
+			{
+				datosAlumnosEnviar=""
+				for(var i = 0; i < alumnosAgregados.length; i++)
+				{
+					datosAlumnosEnviar += alumnosAgregados[i];
+					if(i < (alumnosAgregados.length - 1))
+					{
+						datosAlumnosEnviar += sepTotal;
+					}
+				}
+				$('#datosAlumnos').val(datosAlumnosEnviar);
+			}
+
+			return true;
+		}
+
 		$(document).ready(function(){
 			if(tieneDatos)
 			{
+				$('#idVisitaHidden').val(idVisita);
+				$('#nombreVisita').val(nombreVisita);
+				$('#fechaVisita').val(fechaVisita);
+				$('#catedra').val(catedra);
+				$('#profesorCatedra').val(profesorCatedra);
+				$('#profesorVisita').val(profesorVisita);
+				$('#movilidad').val(movilidad);
+				$('#motivo').val(motivo);
+				$('#nombreEmpresa').val(nombreEmpresa);
+				$('#areaEmpresa').val(areaEmpresa);
+				vTelefonoEmpresa = telefonoEmpresa.split('-');
+				$('#caracteristicaEmpresa').val(vTelefonoEmpresa[0]);
+				$('#telefonoEmpresa').val(vTelefonoEmpresa[1]);
+				$('#nombreContacto').val(nombreContacto);
+				$('#apellidoContacto').val(apellidoContacto);
+				$('#cargoContacto').val(cargoContacto);
+				$('#mailContacto').val(mailContacto);
 
+				actualizarTabla();
 			}
 		});
 	</script>
@@ -118,22 +194,54 @@
 <?php
 
 include_once "conexion.php";
-include_once "libreria.php";
+include_once "scripts/libreria.php";
 
 $idVisita = (empty($_REQUEST['idVisita'])) ? 0 : $_REQUEST['idVisita'];
+
+$sep = '/--/';
 
 if($idVisita != 0)
 {
 	$condicion = "id=$idVisita LIMIT 1;";
 	$sqlVisita = traerSqlCondicion('*','visita',$condicion);
 	$rowVisita = pg_fetch_array($sqlVisita);
+	$datosVisita = $rowVisita['id'].$sep;
+	$datosVisita .= $rowVisita['nombre'].$sep;
+	$datosVisita .= $rowVisita['catedra'].$sep;
+	$datosVisita .= $rowVisita['profesor_catedra'].$sep;
+	$datosVisita .= $rowVisita['profesor_visita'].$sep;
+	$datosVisita .= $rowVisita['movilidad'].$sep;
+	$datosVisita .= $rowVisita['fecha'].$sep;
+	$datosVisita .= $rowVisita['nombre_empresa'].$sep;
+	$datosVisita .= $rowVisita['area_empresa'].$sep;
+	$datosVisita .= $rowVisita['nombre_contacto'].$sep;
+	$datosVisita .= $rowVisita['apellido_contacto'].$sep;
+	$datosVisita .= $rowVisita['cargo_contacto'].$sep;
+	$datosVisita .= $rowVisita['mail_contacto'].$sep;
+	$datosVisita .= $rowVisita['telefono_empresa'].$sep;
+	$datosVisita .= $rowVisita['motivo_visita'];
+
+	echo "<script>setDatosVisita('".$datosVisita."')</script>";
+
+	$condicion = "visita_fk="$rowVisita['id'];
+	$sqlAlumnoXVisita = traerSqlCondicion('alumno.*','alumnoxvisita INNER JOIN alumno ON(alumno.id = alumnoxvisita.alumno_fk)',$condicion)
+	while($rowAlumnoXVisita = pg_fetch_array($sqlAlumnoXVisita))
+	{
+		$datosAlumno = $rowAlumnoXVisita['dni'].$sep;
+		$datosAlumno .= $rowAlumnoXVisita['apellido'].$sep;
+		$datosAlumno .= $rowAlumnoXVisita['nombre'].$sep;
+		$datosAlumno .= $rowAlumnoXVisita['fecha_nac'].$sep;
+		$datosAlumno .= $rowAlumnoXVisita['mail'].$sep;
+		$datosAlumno .= $rowAlumnoXVisita['id'];
+		
+		echo "<script>setAlumnoXVisita('".$datosAlumno."')</script>";
+	}
 
 }
 
 $cantAlumnos = contarRegistro('id','alumno');
 if($cantAlumnos > 0)
 {
-	$sep = '/--/';
 	$sqlAlumnos = traerSql('*','alumno');
 	while($rowAlumnos = pg_fetch_array($sqlAlumnos))
 	{
@@ -142,21 +250,17 @@ if($cantAlumnos > 0)
 	}
 }
 
-/*
-$verificarMail=traerSql('mail', 'pasante');
-while($rowVerifMail=pg_fetch_array($verificarMail,NULL,PGSQL_ASSOC)){
-	echo "<script>setMail('".$rowVerifMail['mail']."')</script>";
-}
-*/
 ?>
 <div id="formulario">
 <h2>Registrar nueva visita</h2>
-<form class="formNuevaVisita" name="f1" id="form2" action="guardarNuevaVisita.php" method="post">
+<form class="formNuevaVisita" name="f1" id="form2" action="guardarNuevaVisita.php" onsubmit="return controlSubmit();" method="post">
 <table align="center" width="100%">
 	<tr width="100%">
 		<td width="100%">
 			<fieldset>
 				<legend>Datos de la visita</legend>
+					<input type="hidden" name="idVisitaHidden" value="0"/>
+					<input type="hidden" name="datosAlumnos" value="" />
 					<label for="nombreVisita">Nombre: </label>
 					<input type="text" name="nombreVisita" id="nombreVisita" />
 					<label for="fechaVisita">Fecha: </label>
@@ -197,7 +301,7 @@ while($rowVerifMail=pg_fetch_array($verificarMail,NULL,PGSQL_ASSOC)){
 				<legend>Alumnos</legend>
 					<label for="dniAlumno">DNI: </label>
 					<input type="text" name="dniAlumno" id="dniAlumno" onblur="checkAlumno()"/>
-					<input type="hidden" name="idHiddenAlumno" id="idHiddenAlumno"/>
+					<input type="hidden" name="idHiddenAlumno" id="idHiddenAlumno" value="-1"/>
 					<label for="nombreAlumno">Nombre:</label>
 					<input type="text" name="nombreAlumno" id="nombreAlumno" />
 					<label for="apellidoAlumno">Apellido:</label>
@@ -238,7 +342,7 @@ while($rowVerifMail=pg_fetch_array($verificarMail,NULL,PGSQL_ASSOC)){
 </div>
 <table id="tablaBtn" align="center">
 	<tr width="100%">
-		<td width="50%" align="right">
+		<!--td width="50%" align="right">
 			<?php if($id_Pasante != 0){?>
 				<a href="verAlumno.php?idAlumno=<?php echo $id_Pasante;?>&titulo_pasante=<?php echo $carrera_fk;?>"><input type="button" id="btn_cancelar" value="Cancelar"></a>
 			<?php }else{?>
@@ -246,7 +350,7 @@ while($rowVerifMail=pg_fetch_array($verificarMail,NULL,PGSQL_ASSOC)){
 			<?php }; 
 				include_once "cerrar_conexion.php";
 			?>
-		</td>	
+		</td-->	
 		<td width="50%" align="left">
 			<input class="submit" type="submit" value="Guardar"/>
 		</td>
