@@ -2,10 +2,15 @@
 <html lang="es">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<script type="text/javascript" src="scripts/jquery-1.11.3.min.js"></script>
 <!--link rel="stylesheet" href="css/registroPasante.css"-->
 	<title>Registro de Visitas</title>
-	<script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.css">
+	<link rel="stylesheet" href="bootstrap/css/estilos.css">
+	<script src="bootstrap/js/jquery-1.11.3.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<script defer>
 		var tieneDatos = false;
 
 		var cantAlumnosAgregados = 0;
@@ -298,9 +303,16 @@ if($cantAlumnos > 0)
 <div id="formulario">
 <h2>Registrar nueva visita</h2>
 <form class="formNuevaVisita" name="f1" id="form2" action="guardarVisita.php" onsubmit="return controlSubmit();" method="post">
-<div>
-	<strong>Ese alumno ya est&aacute; agregado</strong>
-</div>
+<div class="panel panel-body">
+			<div class="page-header superior"></div>
+				<header>
+					<div class="row">
+						<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
+							<div class="alert alert-danger text-center" id="alerta1">
+								<strong>Atenci&oacute;n:</strong> El alumno ya est&aacute; agregado.
+							</div>
+						</div>
+					</div>
 <table align="center" width="100%">
 	<tr width="100%">
 		<td width="100%">

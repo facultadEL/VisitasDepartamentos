@@ -1,0 +1,84 @@
+.superior {border-color:#0f305d;margin-bottom: 0px !important;}
+.inferior {border-color:#205fb2;margin-bottom: 50px !important;}
+/*.form-control:focus{
+    border-color:#0f305d;
+    -webkit-box-shadow: inset 0 1px 1px #0f305d, 0 0 8px #0f305d;
+    box-shadow: inset 0 1px 1px #0f305d, 0 0 8px #0f305d;
+}*/
+.margen_sup{
+    margin-top: 50px !important;
+}
+
+select, option{
+    color: #0f305d !important;
+    font-weight: bold !important;
+}
+h4{
+    color: #2a5faf !important;
+}
+
+.panel-title{
+    font-weight: bold !important;
+    letter-spacing: 1px !important;
+}
+.panel-heading{
+    color: #97c3fc !important;
+    background: #205fb2 !important;
+}
+.panel_body{
+    background: #f9f9f9 !important;
+}
+
+h3{
+    margin-bottom: 0% !important;
+    padding-bottom: 0% !important;
+}
+.superior2 {border-color:#0f305d;margin-bottom: 0px !important;}
+.inferior2 {border-color:#205fb2;margin-bottom: 30px !important;margin-top: 10px !important;}
+
+legend {
+    border-bottom: 1px solid #205fb2 !important;
+}
+
+#alerta1, #alerta2, #alerta3, #alerta4{
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+.alerta_dni{
+    margin-bottom: 20px !important;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 14px !important;
+    margin-bottom: 0;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    border: 3px solid transparent !important;
+}
+.btn-default {
+    color: #205fb2 !important;
+    background-color: #001247 !important;
+    border: 3px solid #205fb2 !important;
+}
+.btn-default:hover,
+.btn-default:focus,
+.btn-default.focus{
+    color: #001247 !important;
+    background-color: #205fb2 !important;
+    border: 3px solid #001247 !important;
+}
+
+.btn-default:active,
+.btn-default.active{
+    color: #205dad !important;
+    background-color: #222 !important;
+    border: 3px solid #205dad !important;
+}
+
+.txt_dni{
+    font-size: 15px !important;
+    font-weight: bold !important;
+    letter-spacing: 2px !important;
+    font: roboto !important;
+}
