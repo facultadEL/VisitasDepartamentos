@@ -1,6 +1,5 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<script type='text/javascript' src="jquery.min-1.9.1.js"></script>
-<script type='text/javascript' src="codeLibrary.js"></script>
+<script type='text/javascript' src="scripts/jquery.min-1.9.1.js"></script>
 <?php
 //Actualizada a la fecha 30/09/2014 
 //error_reporting(E_ALL & ~E_NOTICE);

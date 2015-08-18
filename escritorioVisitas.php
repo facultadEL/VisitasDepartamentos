@@ -37,8 +37,9 @@ $(document).ready(function()
 include_once "conexion.php";
 include_once "scripts/libreria.php";
 
-$condicion = 'solicitante='.$_SESSION['id_user'];
-$cantidadVisitas = contarRegistro('id','visita',$condicion);
+$condicion = 'solicitante_fk='.$_SESSION['id_user'];
+echo $condicion;
+$cantVisitas = contarRegistro('id','visita',$condicion);
 echo "<script>setCantVisitas('".$cantVisitas."')</script>";
 
 ?>
@@ -60,7 +61,7 @@ echo "<script>setCantVisitas('".$cantVisitas."')</script>";
 	<td></td>
 </tr>
 <?php
-$condicion = "";
+$condicion = "solicitante_fk=".$_SESSION['id_user'];
 $sqlListadoVisitas = traerSqlCondicion('*','visita',$condicion);
 while($rowListadoVisitas = pg_fetch_array($sqlListadoVisitas))
 {
@@ -75,10 +76,10 @@ while($rowListadoVisitas = pg_fetch_array($sqlListadoVisitas))
 			echo $rowListadoVisitas['catedra'];
 		echo '</td>';
 		echo '<td>';
-			echo $rowListadoVisitas['empresa'];
+			echo $rowListadoVisitas['nombre_empresa'];
 		echo '</td>';
 		echo '<td>';
-			echo '<a href="verVisita.php?idVisita='$rowListadoVisitas['id'].'">Ver m&aacute;s</a>';
+			echo '<a href="registrarVisita.php?idVisita='.$rowListadoVisitas['id'].'">Ver m&aacute;s</a>';
 		echo '</td>';
 	echo '</tr>';
 }

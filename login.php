@@ -15,9 +15,10 @@ $usuario = (empty($_SESSION['usuario'])) ? NULL : $_SESSION['usuario'];
 	<meta charset="utf-8">
 	<title>Login</title>
 	<script type='text/javascript' src="scripts/jquery-1.11.3.min.js"></script>
-	<script type='text/javascript' src="scripts/cryptor.js"></script>
+	<!--script type='text/javascript' src="scripts/cryptor.js"></script-->
 	<link rel="stylesheet" href="css/login.css">
 	<script>
+		var pasa;
 		var dataDictionary = [];
 
 		function setData(dataToPush){
@@ -31,29 +32,32 @@ $usuario = (empty($_SESSION['usuario'])) ? NULL : $_SESSION['usuario'];
                 "pass" : $('#password').val()
         	};
 
+   			var pasa;
 			$.ajax({
 				type: "POST",
 				url: "controlUsuario.php",
 				data: parametros,
+				async: false,
 				success:  function (response) { //Funcion que ejecuta si todo pasa bien. El response es los datos que manda el otro archivo
                         if(response == '1')
-                        	return true;
+                        {
+                        	$('#form').submit();
+                        }
                         else
                         {
                         	switch(response)
                         	{
-                        		case 0:
-                        		case 2:
+                        		case '0':
+                        		case '2':
                         			alert("Datos de ingreso incorrectos");
                         			break;
-                        		case 3:
+                        		case '3':
                         			alert("Usuario deshabilitado");
                         			break;
                         		default:
                         			alert("Comunicarse con extension");
                         			break;
                         	}
-                        	return false;
                         }
                 },
 				error: function (msg) {
@@ -61,6 +65,39 @@ $usuario = (empty($_SESSION['usuario'])) ? NULL : $_SESSION['usuario'];
 				}
 			});
 		}
+
+		function pulsar(e)
+		{
+			if(e.keyCode == 13)
+			{
+				if(!controlVacio('#user')) return false;
+				if(!controlVacio('#password')) return false;
+
+				validateData();
+			}
+		}
+
+		function controlVacio(nombreSelector)
+		{
+			if($.trim($(nombreSelector).val()) == '')
+	    	{
+	        	// $(nombreSelector).css('border-color','red');
+	        	// $(nombreSelector).css('outline','0px');
+	        	$(nombreSelector).css('box-shadow','0px 0px 10px 5px #f24d4d');
+
+		        $(nombreSelector).focus();
+	    	    return false;
+	    	}
+	    	return true;
+		}
+
+		function sacarColor(me)
+		{
+	    	// $(me).css('border-color','initial');
+	    	// $(me).css('outline','1px');
+	    	$(me).css('box-shadow','0px 0px 10px 1px #ccc');
+		}
+
 	</script>
 </head>
 <body>
@@ -81,7 +118,7 @@ include_once "cerrar_conexion.php";
 ?>
 	<div id="login">
 		<h2>Login</h2>
-		<form action="verificarLogin.php" onsubmit="return validateData();" method="post">
+		<form action="verificarLogin.php" id="form" method="post">
 				<table width="100%" align="center">
 					<tr>
 						<td>
@@ -90,7 +127,7 @@ include_once "cerrar_conexion.php";
 					</tr>
 					<tr>
 						<td>
-							<input type="text" id="user" name="usuario" value="" placeholder="Usuario" autofocus required/>
+							<input type="text" id="user" name="usuario" value="" placeholder="Usuario" autofocus required onkeydown="pulsar(event);sacarColor(this);" />
 						</td>
 					</tr>
 					<tr>
@@ -100,9 +137,9 @@ include_once "cerrar_conexion.php";
 					</tr>
 					<tr>
 						<td>
-							<input type="password" id="password" name="password" value="" placeholder="Contrase&ntilde;a" required/>
+							<input type="password" id="password" name="password" value="" placeholder="Contrase&ntilde;a" required onkeydown="pulsar(event);sacarColor(this);"/>
 						</td>
-					</tr>
+					</tr>  
 					<tr>
 						<td>
 							<hr width="100%">
@@ -110,7 +147,7 @@ include_once "cerrar_conexion.php";
 					</tr>
 					<tr>
 						<td>
-							<input type="submit" id="btn_enviar" value="Acceder">
+							<input type="button" id="btn_enviar" value="Acceder" onclick="validateData();">
 						</td>
 					</tr>
 					<tr>

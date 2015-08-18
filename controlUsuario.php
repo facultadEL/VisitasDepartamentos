@@ -9,35 +9,47 @@
 */
 
 include_once "conexion.php";
-include_once "scripts/libreria.php";
+//include_once "scripts/libreria.php";
+
+//$conn = pg_connect("host=localhost port=5432 user=postgres password=postgres dbname=visitasDepto") or die("Error de conexion.".pg_last_error());
 
 $userToValidate = $_POST["user"];
 $passToValidate = $_POST["pass"];
 
-$sql = traerSql('*','usuario ORDER BY id');
+$control = 0;
+
+$sql = pg_query("SELECT * FROM usuario where UPPER(username) like UPPER('{$userToValidate}') ORDER BY id");
+//$sql = traerSql('*','usuario ORDER BY id');
 while($rowSql = pg_fetch_array($sql))
 {
-	$usuarioDB = $rowSql['user'];
+	$usuarioDB = strtolower($rowSql['username']);
 	if($userToValidate == $usuarioDB)
 	{
 		if($rowSql['habilitado'] == true)
 		{
-			if(md5(crypt($passToValidate,CRYPT_BLOWFISH)) == $rowSql['password'])
+			if(md5($passToValidate) == $rowSql['pass'])
 			{
-				return 1;
+				echo '1';
+				break;
 			}
 			else
 			{
-				return 2;
+				echo '2';
+				break;
 			}	
 		}
 		else
 		{
-			return 3;
+			echo '3';
+			break;
 		}
 	}
+	else
+	{
+		echo '2';
+		break;
+	}
 }
-return 0;
 
 include_once "cerrar_conexion.php";
 ?>

@@ -2,11 +2,9 @@
 <html lang="es">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
-<script type="text/javascript" src="codeLibrary.js"></script>
-<script type="text/javascript" src="cryptor.js"></script>
-<link rel="stylesheet" href="css/registroPasante.css">
-	<title>Registro de Usuario</title>
+<script type="text/javascript" src="scripts/jquery-1.11.3.min.js"></script>
+<!--link rel="stylesheet" href="css/registroPasante.css"-->
+	<title>Registro de Visitas</title>
 	<script>
 		var tieneDatos = false;
 
@@ -25,6 +23,13 @@
 		fecha, nombreEmpresa, areaEmpresa,nombreContacto,apellidoContacto,
 		cargoContacto,mailContacto,telefonoEmpresa,motivoVisita;
 		
+		function sacarColor(me)
+		{
+	    	// $(me).css('border-color','initial');
+	    	// $(me).css('outline','1px');
+	    	$(me).css('box-shadow','0px 0px 10px 1px #ccc');
+		}
+
 		function setDatosVisita(datos)
 		{
 			tieneDatos = true;
@@ -86,8 +91,24 @@
 			return returnString;
 		}
 
+		function controlAlumnos()
+		{
+			dniActual = $(dniAId).val();
+			for(var i = 0; i < alumnosAgregados.length; i++)
+			{
+				vDatosAlumnoAgregado = alumnosAgregados[i].split(sep);
+				if(dniActual == vDatosAlumnoAgregado[0])
+				{
+					alert("Alumno Agregado!");
+					return false;
+				}
+			}
+			return true;
+		}
+
 		function addAlumno()
 		{
+			if(!controlAlumnos()) return false;
 			if(!controlVacio(apellidoAId)) return false;
 			if(!controlVacio(nombreAId)) return false;
 			if(!controlVacio(fechaAId)) return false;
@@ -96,7 +117,7 @@
 			*/
 			cantAlumnosAgregados++;
 			//stringAlumnosPasar += $(dniAId).val()+sep+$(apellidoAId).val()+sep+$(nombreAId).val()+sep+$(fechaAId).val()+sep+$(mailAId).val()+sep+$(hiddenAId)+sepTotal;
-			stringToPush = $(dniAId).val()+sep+toCapitalLetter($(apellidoAId).val())+sep+toCapitalLetter($(nombreAId).val())+sep+$(fechaAId).val()+sep+$(mailAId).val()+sep+$(hiddenAId);
+			stringToPush = $(dniAId).val()+sep+toCapitalLetter($(apellidoAId).val())+sep+toCapitalLetter($(nombreAId).val())+sep+$(fechaAId).val()+sep+$(mailAId).val()+sep+$(hiddenAId).val();
 			alumnosAgregados.push(stringToPush);
 
 			actualizarTabla();
@@ -106,6 +127,7 @@
 
 		function limpiarPantalla()
 		{
+			$(dniAId).val('');
 			$(apellidoAId).val('');
 			$(nombreAId).val('');
 			$(fechaAId).val('');
@@ -134,14 +156,36 @@
 			actualizarTabla();
 		}
 
-		function controlVacio()
+		function controlVacio(nombreSelector)
 		{
+			if($.trim($(nombreSelector).val()) == '')
+	    	{
+	        	// $(nombreSelector).css('border-color','red');
+	        	// $(nombreSelector).css('outline','0px');
+	        	$(nombreSelector).css('box-shadow','0px 0px 10px 5px #f24d4d');
 
+		        $(nombreSelector).focus();
+	    	    return false;
+	    	}
+	    	return true;
 		}
 
 		function controlSubmit()
 		{
 			//Llamar a control vacio con las variables obligatorias
+			if(!controlVacio('#nombreVisita')) return false;
+			if(!controlVacio('#fechaVisita')) return false;
+			if(!controlVacio('#catedra')) return false;
+			if(!controlVacio('#profesorCatedra')) return false;
+			if(!controlVacio('#movilidad')) return false;
+			if(!controlVacio('#motivo')) return false;
+			if(!controlVacio('#nombreEmpresa')) return false;
+			if(!controlVacio('#areaEmpresa')) return false;
+			if(!controlVacio('#caracteristicaEmpresa')) return false;
+			if(!controlVacio('#telefonoEmpresa')) return false;
+			if(!controlVacio('#nombreContacto')) return false;
+			if(!controlVacio('#apellidoContacto')) return false;
+			if(!controlVacio('#cargoContacto')) return false;
 
 			if(cantAlumnosAgregados < 1)
 			{
@@ -169,12 +213,12 @@
 			{
 				$('#idVisitaHidden').val(idVisita);
 				$('#nombreVisita').val(nombreVisita);
-				$('#fechaVisita').val(fechaVisita);
+				$('#fechaVisita').val(fecha);
 				$('#catedra').val(catedra);
 				$('#profesorCatedra').val(profesorCatedra);
 				$('#profesorVisita').val(profesorVisita);
 				$('#movilidad').val(movilidad);
-				$('#motivo').val(motivo);
+				$('#motivo').val(motivoVisita);
 				$('#nombreEmpresa').val(nombreEmpresa);
 				$('#areaEmpresa').val(areaEmpresa);
 				vTelefonoEmpresa = telefonoEmpresa.split('-');
@@ -223,8 +267,8 @@ if($idVisita != 0)
 
 	echo "<script>setDatosVisita('".$datosVisita."')</script>";
 
-	$condicion = "visita_fk="$rowVisita['id'];
-	$sqlAlumnoXVisita = traerSqlCondicion('alumno.*','alumnoxvisita INNER JOIN alumno ON(alumno.id = alumnoxvisita.alumno_fk)',$condicion)
+	$condicion = "visita_fk=".$rowVisita['id'];
+	$sqlAlumnoXVisita = traerSqlCondicion('alumno.*','alumnoxvisita INNER JOIN alumno ON(alumno.id = alumnoxvisita.alumno_fk)',$condicion);
 	while($rowAlumnoXVisita = pg_fetch_array($sqlAlumnoXVisita))
 	{
 		$datosAlumno = $rowAlumnoXVisita['dni'].$sep;
@@ -239,7 +283,7 @@ if($idVisita != 0)
 
 }
 
-$cantAlumnos = contarRegistro('id','alumno');
+$cantAlumnos = contarRegistro('id','alumno',null);
 if($cantAlumnos > 0)
 {
 	$sqlAlumnos = traerSql('*','alumno');
@@ -253,47 +297,50 @@ if($cantAlumnos > 0)
 ?>
 <div id="formulario">
 <h2>Registrar nueva visita</h2>
-<form class="formNuevaVisita" name="f1" id="form2" action="guardarNuevaVisita.php" onsubmit="return controlSubmit();" method="post">
+<form class="formNuevaVisita" name="f1" id="form2" action="guardarVisita.php" onsubmit="return controlSubmit();" method="post">
+<div>
+	<strong>Ese alumno ya est&aacute; agregado</strong>
+</div>
 <table align="center" width="100%">
 	<tr width="100%">
 		<td width="100%">
 			<fieldset>
 				<legend>Datos de la visita</legend>
-					<input type="hidden" name="idVisitaHidden" value="0"/>
-					<input type="hidden" name="datosAlumnos" value="" />
+					<input type="hidden" name="idVisitaHidden" id="idVisitaHidden" value="0"/>
+					<input type="hidden" name="datosAlumnos" id="datosAlumnos" value="" />
 					<label for="nombreVisita">Nombre: </label>
-					<input type="text" name="nombreVisita" id="nombreVisita" />
+					<input type="text" name="nombreVisita" id="nombreVisita" onkeydown="sacarColor(this)"/>
 					<label for="fechaVisita">Fecha: </label>
-					<input type="date" name="fechaVisita" id="fechaVisita" />
+					<input type="date" name="fechaVisita" id="fechaVisita" onkeydown="sacarColor(this)"/>
 					<label for="catedra">C&aacute;tedra:</label>
-					<input type="text" name="catedra" id="catedra" />
+					<input type="text" name="catedra" id="catedra" onkeydown="sacarColor(this)"/>
 					<label for="profesorCatedra">Profesor a cargo de la c&aacute;tedra:</label>
-					<input type="text" name="profesorCatedra" id="profesorCatedra" />
+					<input type="text" name="profesorCatedra" id="profesorCatedra" onkeydown="sacarColor(this)"/>
 					<label for="profesorVisita">Profesor a cargo de la visita:</label>
 					<input type="text" name="profesorVisita" id="profesorVisita" />
 					<label for="movilidad">Medio de movilidad:</label>
-					<input type="text" name="movilidad" id="movilidad" />
+					<input type="text" name="movilidad" id="movilidad" onkeydown="sacarColor(this)"/>
 					<label for="motivo">Motivo de la visita:</label>
-					<textarea name="motivo" id="motivo"></textarea>
+					<textarea name="motivo" id="motivo" onkeydown="sacarColor(this)"></textarea>
 			</fieldset>
 			<fieldset>
 				<legend>Datos de la Empresa</legend>
 					<label for="nombreEmpresa">Nombre de la empresa:</label>
-					<input type="text" name="nombreEmpresa" id="nombreEmpresa" />
+					<input type="text" name="nombreEmpresa" id="nombreEmpresa" onkeydown="sacarColor(this)"/>
 					<label for="areaEmpresa">&Aacute;rea de la empresa:</label>
-					<input type="text" name="areaEmpresa" id="areaEmpresa" />
+					<input type="text" name="areaEmpresa" id="areaEmpresa" onkeydown="sacarColor(this)"/>
 					<label for="caracteristicaEmpresa">T&eacute;lefono:</label>
-					<input type="text" name="caracteristicaEmpresa" id="caracteristicaEmpresa" />
-					<input type="text" name="telefonoEmpresa" id="telefonoEmpresa" />
+					<input type="text" name="caracteristicaEmpresa" id="caracteristicaEmpresa" onkeydown="sacarColor(this)"/>
+					<input type="text" name="telefonoEmpresa" id="telefonoEmpresa" onkeydown="sacarColor(this)"/>
 			</fieldset>
 			<fieldset>
 				<legend>Datos del Contacto</legend>
 					<label for="nombreContacto">Nombre:</label>
-					<input type="text" name="nombreContacto" id="nombreContacto" />
+					<input type="text" name="nombreContacto" id="nombreContacto" onkeydown="sacarColor(this)"/>
 					<label for="apellidoContacto">Apellido:</label>
-					<input type="text" name="apellidoContacto" id="apellidoContacto" />
+					<input type="text" name="apellidoContacto" id="apellidoContacto" onkeydown="sacarColor(this)"/>
 					<label for="cargoContacto">Cargo que ocupa:</label>
-					<input type="text" name="cargoContacto" id="cargoContacto" />
+					<input type="text" name="cargoContacto" id="cargoContacto" onkeydown="sacarColor(this)"/>
 					<label for="mailContacto">Mail:</label>
 					<input type="mail" name="mailContacto" id="mailContacto" />
 			</fieldset>
@@ -307,7 +354,7 @@ if($cantAlumnos > 0)
 					<label for="apellidoAlumno">Apellido:</label>
 					<input type="text" name="apellidoAlumno" id="apellidoAlumno" />
 					<label for="fechaAlumno">Fecha de Nacimiento:</label>
-					<input type="text" name="fechaAlumno" id="fechaAlumno" />
+					<input type="date" name="fechaAlumno" id="fechaAlumno" />
 					<label for="mailAlumno">Mail:</label>
 					<input type="mail" name="mailAlumno" id="mailAlumno" />
 					<input type="button" id="agregarAlumno" name="agregarAlumno" value="Agregar" onclick="addAlumno();"/>
