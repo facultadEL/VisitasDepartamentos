@@ -171,7 +171,7 @@ else //Actualiza una visita existente
 
 if($consultaCompleta != '')
 {
-	echo $consultaCompleta;
+	//echo $consultaCompleta;
 	$error = guardarSql($consultaCompleta);
 	if($error == 1)
 	{
