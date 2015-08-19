@@ -32,6 +32,7 @@
 		{
 	    	// $(me).css('border-color','initial');
 	    	// $(me).css('outline','1px');
+	    	loadScreen();
 	    	$(me).css('box-shadow','0px 0px 10px 1px #ccc');
 		}
 
@@ -104,7 +105,7 @@
 				vDatosAlumnoAgregado = alumnosAgregados[i].split(sep);
 				if(dniActual == vDatosAlumnoAgregado[0])
 				{
-					alert("Alumno Agregado!");
+					$('#alerta1').attr('hidden',false);
 					return false;
 				}
 			}
@@ -117,9 +118,8 @@
 			if(!controlVacio(apellidoAId)) return false;
 			if(!controlVacio(nombreAId)) return false;
 			if(!controlVacio(fechaAId)) return false;
-			/*
-			Seguir control vacio
-			*/
+			if(!controlVacio(mailAId)) return false;
+			if(!controlMail(mailAId)) return false;
 			cantAlumnosAgregados++;
 			//stringAlumnosPasar += $(dniAId).val()+sep+$(apellidoAId).val()+sep+$(nombreAId).val()+sep+$(fechaAId).val()+sep+$(mailAId).val()+sep+$(hiddenAId)+sepTotal;
 			stringToPush = $(dniAId).val()+sep+toCapitalLetter($(apellidoAId).val())+sep+toCapitalLetter($(nombreAId).val())+sep+$(fechaAId).val()+sep+$(mailAId).val()+sep+$(hiddenAId).val();
@@ -167,12 +167,25 @@
 	    	{
 	        	// $(nombreSelector).css('border-color','red');
 	        	// $(nombreSelector).css('outline','0px');
+	        	$('#alertaDatos').attr('hidden',false);
 	        	$(nombreSelector).css('box-shadow','0px 0px 10px 5px #f24d4d');
 
 		        $(nombreSelector).focus();
 	    	    return false;
 	    	}
 	    	return true;
+		}
+
+		function controlMail(nombreSelector)
+		{
+			if($(nombreSelector).val().indexOf('@') == -1)
+			{
+				$(nombreSelector).css('box-shadow','0px 0px 10px 5px #f24d4d');
+
+		        $(nombreSelector).focus();
+				return false;
+			}
+			return true;
 		}
 
 		function controlSubmit()
@@ -194,6 +207,7 @@
 
 			if(cantAlumnosAgregados < 1)
 			{
+				$('#alertaAlumnos').attr('hidden',false);
 				return false;
 			}
 			else
@@ -241,6 +255,8 @@
 
 		function loadScreen(){
 		  $('#alerta1').attr('hidden', true);
+		  $('#alertaDatos').attr('hidden', true);
+		  $('#alertaAlumnos').attr('hidden', true);
 		}
 	</script>
 </head>
@@ -323,6 +339,22 @@ if($cantAlumnos > 0)
 					</div>
 
 					<div class="row">
+						<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
+							<div class="alert alert-danger text-center" id="alertaDatos">
+								<strong>Atenci&oacute;n:</strong> Faltan agregar datos.
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
+							<div class="alert alert-danger text-center" id="alertaAlumnos">
+								<strong>Atenci&oacute;n:</strong> Se debe agregar por lo menos un alumno.
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
 						<legend class="text-left"><h4 class="text-left">Datos de la visita</h4></legend>
 					</div>
 
@@ -332,30 +364,30 @@ if($cantAlumnos > 0)
 					<div class="row">
 						<div class="form-group">
 							<label for="nombreVisita" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Nombre:</label>
-							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="nombreVisita" type="text" id="nombreVisita" onkeydown="sacarColor(this)" /></div>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="nombreVisita" type="text" id="nombreVisita" onkeydown="sacarColor(this)" required /></div>
 							
 							<label for="fechaVisita" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Fecha:</label>
-							<div class="col-xs-10 col-sm-4 col-md-3 col-lg-3"><input class="form-control" name="fechaVisita" type="date" id="fechaVisita" onkeydown="sacarColor(this)" /></div>
+							<div class="col-xs-10 col-sm-4 col-md-3 col-lg-3"><input class="form-control" name="fechaVisita" type="date" id="fechaVisita" onkeydown="sacarColor(this)" required /></div>
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="form-group">
 							<label for="catedra" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">C&aacute;tedra:</label>
-							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="catedra" type="text" id="catedra" onkeydown="sacarColor(this)" /></div>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="catedra" type="text" id="catedra" onkeydown="sacarColor(this)" required /></div>
 							
 							<label for="profesorCatedra" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Profesor C&aacute;tedra:</label>
-							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="profesorCatedra" type="text" id="profesorCatedra" onkeydown="sacarColor(this)" /></div>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="profesorCatedra" type="text" id="profesorCatedra" onkeydown="sacarColor(this)" required /></div>
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="form-group">
 							<label for="profesorVisita" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Profesor Visita:</label>
-							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="profesorVisita" type="text" id="profesorVisita" onkeydown="sacarColor(this)" /></div>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="profesorVisita" type="text" id="profesorVisita" onkeydown="sacarColor(this)"  /></div>
 							
 							<label for="movilidad" class="control-label col-xs-4 col-sm-2 col-md-2 col-lg-2">Medio de Movilidad:</label>
-							<div class="col-xs-8 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="movilidad" type="text" id="movilidad" onkeydown="sacarColor(this)" /></div>
+							<div class="col-xs-8 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="movilidad" type="text" id="movilidad" onkeydown="sacarColor(this)" required /></div>
 						</div>
 					</div>
 
@@ -389,18 +421,18 @@ if($cantAlumnos > 0)
 					<div class="row">
 						<div class="form-group">
 							<label for="nombreEmpresa" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Raz&oacute;n Social:</label>
-							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="nombreEmpresa" type="text" id="nombreEmpresa" onkeydown="sacarColor(this)" /></div>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="nombreEmpresa" type="text" id="nombreEmpresa" onkeydown="sacarColor(this)" required /></div>
 							
 							<label for="areaEmpresa" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">&Aacute;rea:</label>
-							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="areaEmpresa" type="text" id="areaEmpresa" onkeydown="sacarColor(this)" /></div>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="areaEmpresa" type="text" id="areaEmpresa" onkeydown="sacarColor(this)" required /></div>
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="form-group">
 							<label for="caracteristicaEmpresa" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">T&eacute;lefono:</label>
-							<div class="col-xs-3 col-sm-2 col-md-2 col-lg-1"><input class="form-control" name="caracteristicaEmpresa" type="text" id="caracteristicaEmpresa" onkeydown="sacarColor(this)" /></div>
-							<div class="col-xs-7 col-sm-3 col-md-3 col-lg-3"><input class="form-control" name="telefonoEmpresa" type="text" id="telefonoEmpresa" onkeydown="sacarColor(this)" /></div>
+							<div class="col-xs-3 col-sm-2 col-md-2 col-lg-1"><input class="form-control" name="caracteristicaEmpresa" type="text" pattern="[1-9]{2,4}" placeholder="Sin 0" maxlength="5" id="caracteristicaEmpresa" onkeydown="sacarColor(this)" required /></div>
+							<div class="col-xs-7 col-sm-3 col-md-3 col-lg-3"><input class="form-control" name="telefonoEmpresa" type="text" pattern="[0-9]{6,8}" placeholder="Sin 15" id="telefonoEmpresa" onkeydown="sacarColor(this)" required /></div>
 						</div>
 					</div>
 			<!-- <fieldset>
@@ -456,7 +488,7 @@ if($cantAlumnos > 0)
 					<div class="row">
 						<div class="form-group">
 							<label for="dniAlumno" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">DNI:</label>
-							<div class="col-xs-10 col-sm-4 col-md-2 col-lg-2"><input class="form-control" name="dniAlumno" type="text" id="dniAlumno" onblur="checkAlumno()" onkeydown="sacarColor(this)"  /></div>
+							<div class="col-xs-10 col-sm-4 col-md-2 col-lg-2"><input class="form-control" name="dniAlumno" pattern="([0-9]{1}|[0-9]{2})[0-9]{3}[0-9]{3}" maxlength="10" title="Solo n&uacute;meros" type="text" id="dniAlumno" onblur="checkAlumno()" onkeydown="sacarColor(this)"  /></div>
 							<input type="hidden" name="idHiddenAlumno" id="idHiddenAlumno" value="-1"/>
 						</div>
 					</div>
@@ -484,7 +516,7 @@ if($cantAlumnos > 0)
 					<div class="row">
 						<div class="form-group">
 							<p>
-								<center><button type="button" id="agregarAlumno" onclick="addAlumno();" class="btn btn-primary btn-sm" title="Enviar encuesta">Agregar</button></center>
+								<center><button type="button" id="agregarAlumno" onclick="addAlumno();" class="btn btn-primary btn-sm" title="Agregar alumno">Agregar</button></center>
 							</p>
 						</div>
 					</div>
