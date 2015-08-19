@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="es">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <!--link rel="stylesheet" href="css/registroPasante.css"-->
@@ -237,9 +237,14 @@
 				actualizarTabla();
 			}
 		});
+
+
+		function loadScreen(){
+		  $('#alerta1').attr('hidden', true);
+		}
 	</script>
 </head>
-<body>
+<body onload="loadScreen()">
 <?php
 
 include_once "conexion.php";
@@ -300,12 +305,15 @@ if($cantAlumnos > 0)
 }
 
 ?>
-<div id="formulario">
-<h2>Registrar nueva visita</h2>
-<form class="formNuevaVisita" name="f1" id="form2" action="guardarVisita.php" onsubmit="return controlSubmit();" method="post">
-<div class="panel panel-body">
-			<div class="page-header superior"></div>
-				<header>
+<div class="container">
+		<div class="margen_sup"></div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Registrar Nueva Visita</h3>
+			</div>
+
+			<div class="panel-body panel_body">
+				<form name="f1" id="form2" action="guardarVisita.php" onsubmit="return controlSubmit();" method="post" class="form-horizontal col-xs-12 col-sm-12 col-md-12 col-lg-12 formNuevaVisita">
 					<div class="row">
 						<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
 							<div class="alert alert-danger text-center" id="alerta1">
@@ -313,17 +321,56 @@ if($cantAlumnos > 0)
 							</div>
 						</div>
 					</div>
-<table align="center" width="100%">
-	<tr width="100%">
-		<td width="100%">
-			<fieldset>
-				<legend>Datos de la visita</legend>
+
+					<div class="row">
+						<legend class="text-left"><h4 class="text-left">Datos de la visita</h4></legend>
+					</div>
+
 					<input type="hidden" name="idVisitaHidden" id="idVisitaHidden" value="0"/>
 					<input type="hidden" name="datosAlumnos" id="datosAlumnos" value="" />
-					<label for="nombreVisita">Nombre: </label>
+
+					<div class="row">
+						<div class="form-group">
+							<label for="nombreVisita" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Nombre:</label>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="nombreVisita" type="text" id="nombreVisita" onkeydown="sacarColor(this)" /></div>
+							
+							<label for="fechaVisita" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Fecha:</label>
+							<div class="col-xs-10 col-sm-4 col-md-3 col-lg-3"><input class="form-control" name="fechaVisita" type="date" id="fechaVisita" onkeydown="sacarColor(this)" /></div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-group">
+							<label for="catedra" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">C&aacute;tedra:</label>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="catedra" type="text" id="catedra" onkeydown="sacarColor(this)" /></div>
+							
+							<label for="profesorCatedra" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Profesor C&aacute;tedra:</label>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="profesorCatedra" type="text" id="profesorCatedra" onkeydown="sacarColor(this)" /></div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-group">
+							<label for="profesorVisita" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Profesor Visita:</label>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="profesorVisita" type="text" id="profesorVisita" onkeydown="sacarColor(this)" /></div>
+							
+							<label for="movilidad" class="control-label col-xs-4 col-sm-2 col-md-2 col-lg-2">Medio de Movilidad:</label>
+							<div class="col-xs-8 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="movilidad" type="text" id="movilidad" onkeydown="sacarColor(this)" /></div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-group">
+							<label for="motivo" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Motivo:</label>
+							<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+								<textarea class="form-control" name="motivo" rows="3" id="motivo" onkeydown="sacarColor(this)"></textarea>
+							</div>
+						</div>
+					</div>
+					<!-- <label for="nombreVisita">Nombre: </label>
 					<input type="text" name="nombreVisita" id="nombreVisita" onkeydown="sacarColor(this)"/>
 					<label for="fechaVisita">Fecha: </label>
-					<input type="date" name="fechaVisita" id="fechaVisita" onkeydown="sacarColor(this)"/>
+					<input type="date" name="fechaVisita" id="fechaVisita" onkeydown="sacarColor(this)"/> 
 					<label for="catedra">C&aacute;tedra:</label>
 					<input type="text" name="catedra" id="catedra" onkeydown="sacarColor(this)"/>
 					<label for="profesorCatedra">Profesor a cargo de la c&aacute;tedra:</label>
@@ -333,9 +380,30 @@ if($cantAlumnos > 0)
 					<label for="movilidad">Medio de movilidad:</label>
 					<input type="text" name="movilidad" id="movilidad" onkeydown="sacarColor(this)"/>
 					<label for="motivo">Motivo de la visita:</label>
-					<textarea name="motivo" id="motivo" onkeydown="sacarColor(this)"></textarea>
-			</fieldset>
-			<fieldset>
+					<textarea name="motivo" id="motivo" onkeydown="sacarColor(this)"></textarea>-->
+					
+					<div class="row">
+						<legend class="text-left"><h4 class="text-left">Datos de la Empresa</h4></legend>
+					</div>
+
+					<div class="row">
+						<div class="form-group">
+							<label for="nombreEmpresa" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Raz&oacute;n Social:</label>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="nombreEmpresa" type="text" id="nombreEmpresa" onkeydown="sacarColor(this)" /></div>
+							
+							<label for="areaEmpresa" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">&Aacute;rea:</label>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="areaEmpresa" type="text" id="areaEmpresa" onkeydown="sacarColor(this)" /></div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-group">
+							<label for="caracteristicaEmpresa" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">T&eacute;lefono:</label>
+							<div class="col-xs-3 col-sm-2 col-md-2 col-lg-1"><input class="form-control" name="caracteristicaEmpresa" type="text" id="caracteristicaEmpresa" onkeydown="sacarColor(this)" /></div>
+							<div class="col-xs-7 col-sm-3 col-md-3 col-lg-3"><input class="form-control" name="telefonoEmpresa" type="text" id="telefonoEmpresa" onkeydown="sacarColor(this)" /></div>
+						</div>
+					</div>
+			<!-- <fieldset>
 				<legend>Datos de la Empresa</legend>
 					<label for="nombreEmpresa">Nombre de la empresa:</label>
 					<input type="text" name="nombreEmpresa" id="nombreEmpresa" onkeydown="sacarColor(this)"/>
@@ -344,8 +412,32 @@ if($cantAlumnos > 0)
 					<label for="caracteristicaEmpresa">T&eacute;lefono:</label>
 					<input type="text" name="caracteristicaEmpresa" id="caracteristicaEmpresa" onkeydown="sacarColor(this)"/>
 					<input type="text" name="telefonoEmpresa" id="telefonoEmpresa" onkeydown="sacarColor(this)"/>
-			</fieldset>
-			<fieldset>
+			</fieldset> -->
+
+					<div class="row">
+						<legend class="text-left"><h4 class="text-left">Datos del Contacto</h4></legend>
+					</div>
+
+					<div class="row">
+						<div class="form-group">
+							<label for="nombreContacto" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Nombre:</label>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="nombreContacto" type="text" id="nombreContacto" onkeydown="sacarColor(this)" /></div>
+							
+							<label for="apellidoContacto" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Apellido:</label>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="apellidoContacto" type="text" id="apellidoContacto" onkeydown="sacarColor(this)" /></div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-group">
+							<label for="cargoContacto" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Cargo:</label>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="cargoContacto" type="text" id="cargoContacto" onkeydown="sacarColor(this)" /></div>
+							
+							<label for="mailContacto" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Mail:</label>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="mailContacto" type="mail" id="mailContacto" onkeydown="sacarColor(this)" /></div>
+						</div>
+					</div>
+			<!-- <fieldset>
 				<legend>Datos del Contacto</legend>
 					<label for="nombreContacto">Nombre:</label>
 					<input type="text" name="nombreContacto" id="nombreContacto" onkeydown="sacarColor(this)"/>
@@ -355,8 +447,63 @@ if($cantAlumnos > 0)
 					<input type="text" name="cargoContacto" id="cargoContacto" onkeydown="sacarColor(this)"/>
 					<label for="mailContacto">Mail:</label>
 					<input type="mail" name="mailContacto" id="mailContacto" />
-			</fieldset>
-			<fieldset>
+			</fieldset> -->
+
+					<div class="row">
+						<legend class="text-left"><h4 class="text-left">Alumnos</h4></legend>
+					</div>
+
+					<div class="row">
+						<div class="form-group">
+							<label for="dniAlumno" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">DNI:</label>
+							<div class="col-xs-10 col-sm-4 col-md-2 col-lg-2"><input class="form-control" name="dniAlumno" type="text" id="dniAlumno" onblur="checkAlumno()" onkeydown="sacarColor(this)"  /></div>
+							<input type="hidden" name="idHiddenAlumno" id="idHiddenAlumno" value="-1"/>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-group">
+							<label for="nombreAlumno" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Nombre:</label>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="nombreAlumno" type="text" id="nombreAlumno" onkeydown="sacarColor(this)" /></div>
+
+							<label for="apellidoAlumno" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">Apellido:</label>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="apellidoAlumno" type="text" id="apellidoAlumno" onkeydown="sacarColor(this)" /></div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-group">
+							<label for="fechaAlumno" class="control-label col-xs-4 col-sm-2 col-md-2 col-lg-2">Fecha de Nacimiento:</label>
+							<div class="col-xs-8 col-sm-4 col-md-3 col-lg-3"><input class="form-control" name="fechaAlumno" type="date" id="fechaAlumno" onkeydown="sacarColor(this)" /></div>
+
+							<label for="mailAlumno" class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2 col-md-offset-1 col-lg-offset-1">Mail:</label>
+							<div class="col-xs-10 col-sm-4 col-md-4 col-lg-4"><input class="form-control" name="mailAlumno" type="mail" id="mailAlumno" onkeydown="sacarColor(this)" /></div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-group">
+							<p>
+								<center><button type="button" id="agregarAlumno" onclick="addAlumno();" class="btn btn-primary btn-sm" title="Enviar encuesta">Agregar</button></center>
+							</p>
+						</div>
+					</div>
+
+					<table id="tablaTotalAlumnos" class="table table-striped table-condensed">
+						<thead>
+							<tr>
+								<th>DNI</th>
+								<th>Apellido</th>
+								<th>Nombre</th>
+								<th>Fecha Nacimiento</th>
+								<th>Mail</th>
+							</tr>
+						</thead>
+						<tbody id="cuerpoTabla">
+							
+						</tbody>
+					</table>
+			<!-- <fieldset>
 				<legend>Alumnos</legend>
 					<label for="dniAlumno">DNI: </label>
 					<input type="text" name="dniAlumno" id="dniAlumno" onblur="checkAlumno()"/>
@@ -393,28 +540,19 @@ if($cantAlumnos > 0)
 						<tbody id="cuerpoTabla">
 							
 						</tbody>
-					</table>
-			</fieldset>
-		</td>
-	</tr>
-</table>
-</div>
-<table id="tablaBtn" align="center">
-	<tr width="100%">
-		<!--td width="50%" align="right">
-			<?php if($id_Pasante != 0){?>
-				<a href="verAlumno.php?idAlumno=<?php echo $id_Pasante;?>&titulo_pasante=<?php echo $carrera_fk;?>"><input type="button" id="btn_cancelar" value="Cancelar"></a>
-			<?php }else{?>
-				<a href="escritorioVisitas.php"><input type="button" id="btn_cancelar" value="Cancelar"></a>
-			<?php }; 
-				include_once "cerrar_conexion.php";
-			?>
-		</td-->	
-		<td width="50%" align="left">
-			<input class="submit" type="submit" value="Guardar"/>
-		</td>
-	</tr>
-</table>
-</form>
+					</table> 
+			</fieldset>-->
+					<?php include_once "cerrar_conexion.php"; ?>
+					<div class="row">
+						<div class="form-group">
+							<p>
+								<center><button type="submit" id="agregarAlumno" onclick="addAlumno();" class="btn btn-default submit" title="Enviar encuesta">Guardar</button></center>
+							</p>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
 </body>
 </html>
