@@ -131,6 +131,11 @@
 
 		}
 
+		function volver()
+		{
+			window.location.href = 'escritorioVisitas.php';
+		}
+
 		function limpiarPantalla()
 		{
 			$(dniAId).val('');
@@ -149,7 +154,7 @@
 			for(var i = 0; i < alumnosAgregados.length; i++)
 			{
 				var vAlumno = alumnosAgregados[i].split(sep);
-				stringToAdd += '<tr><td>'+vAlumno[0]+'</td><td>'+vAlumno[1]+'</td><td>'+vAlumno[2]+'</td><td>'+vAlumno[3]+'</td><td>'+vAlumno[4]+'</td><td><input type="button" value="X" onclick="borrarAlumno('+"'"+i+"'"+')"</td></tr>';
+				stringToAdd += '<tr><td>'+vAlumno[0]+'</td><td>'+vAlumno[1]+'</td><td>'+vAlumno[2]+'</td><td>'+vAlumno[3]+'</td><td>'+vAlumno[4]+'</td><td><input type="button" class="btn btn-danger" value="X" onclick="borrarAlumno('+"'"+i+"'"+')"</td></tr>';
 			}
 			$('#cuerpoTabla').html(stringToAdd);
 		}
@@ -579,7 +584,10 @@ if($cantAlumnos > 0)
 					<div class="row">
 						<div class="form-group">
 							<p>
-								<center><button type="submit" id="agregarAlumno" onclick="addAlumno();" class="btn btn-default submit" title="Enviar encuesta">Guardar</button></center>
+								<center>
+									<button type="button" id="agregarAlumno" onclick="volver();" class="btn btn-default submit" title="Salir">Volver</button>
+									<button type="submit" id="agregarAlumno" class="btn btn-default submit" title="Guardar">Guardar</button>
+								</center>
 							</p>
 						</div>
 					</div>
