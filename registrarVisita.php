@@ -74,7 +74,8 @@
 
 
 		function checkAlumno()
-		{			
+		{
+			var encontro = 0;
 			dniNuevoAlumno = $(dniAId).val();
 			for(var i = 0; i < alumnoDictionary.length; i++)
 			{
@@ -86,7 +87,16 @@
 					$(fechaAId).val(vDatosAlumno[3]);
 					$(mailAId).val(vDatosAlumno[4]);
 					$(hiddenAId).val(vDatosAlumno[5]);
+					encontro = 1;
 				}
+			}
+			if(encontro == 0)
+			{
+				$(apellidoAId).val("");
+				$(nombreAId).val("");
+				$(fechaAId).val("");
+				$(mailAId).val("");
+				$(hiddenAId).val("");
 			}
 		}
 
@@ -120,7 +130,7 @@
 			if(!controlVacio(nombreAId)) return false;
 			if(!controlVacio(fechaAId)) return false;
 			if(!controlVacio(mailAId)) return false;
-			if(!controlMail(mailAId)) return false;
+			//if(!controlMail(mailAId)) return false;
 			cantAlumnosAgregados++;
 			//stringAlumnosPasar += $(dniAId).val()+sep+$(apellidoAId).val()+sep+$(nombreAId).val()+sep+$(fechaAId).val()+sep+$(mailAId).val()+sep+$(hiddenAId)+sepTotal;
 			stringToPush = $(dniAId).val()+sep+toCapitalLetter($(apellidoAId).val())+sep+toCapitalLetter($(nombreAId).val())+sep+$(fechaAId).val()+sep+$(mailAId).val()+sep+$(hiddenAId).val();
