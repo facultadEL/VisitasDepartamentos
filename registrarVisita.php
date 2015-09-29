@@ -115,6 +115,7 @@
 		function addAlumno()
 		{
 			if(!controlAlumnos()) return false;
+			if(!controlVacio(dniAId)) return false;
 			if(!controlVacio(apellidoAId)) return false;
 			if(!controlVacio(nombreAId)) return false;
 			if(!controlVacio(fechaAId)) return false;
